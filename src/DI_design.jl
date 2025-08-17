@@ -21,20 +21,20 @@ using Plots
 using JLD
 
 # include functions
-include("H60_mixing.jl")
+include("control_mixing.jl")
 include("table_lookup.jl")
-include("H60_StabSched.jl")
+include("stabSched.jl")
 include("atan2.jl")
 include("eqnmot.jl")
 include("interpp1.jl")
 include("linearize.jl")
 include("interpp2.jl")
 include("wrapper.jl")
-include("H60_trimmer.jl")
+include("trimmer.jl")
 include("ModRed.jl")
 include("ModRed8.jl")
-include("H60.jl")
-#include("H60_DI.jl")
+include("GenHel.jl")
+#include("GenHel_DI.jl")
 include("rk4.jl")
 include("finp.jl")
 include("simulate.jl")
@@ -120,12 +120,12 @@ for iv=1:length(VXTRIM_vec)
     # time [s]
     t=0.0
     # trim aircraft
-    x0, u0 = H60_trimmer(H60!,x0,u0,xdot_targ,t)
+    x0, u0 = trimmer(GenHel!,x0,u0,xdot_targ,t)
     # store trim state and controls
     x0_mat[:,iv] = x0
     u0_mat[:,iv] = u0
     # linearized aircraft dynamics
-    A, B = linearize(H60!,x0,u0,xdot0,t)
+    A, B = linearize(GenHel!,x0,u0,xdot0,t)
     # reduce to 8-state model
     sysRed = ModRed8(A,B)
     A8=sysRed[1]
